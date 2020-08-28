@@ -102,6 +102,7 @@ function localList() {
 }
 
 function loadStorage() {
+    alert("This site uses cookies to save your list offline")
     variable = JSON.parse(localStorage.getItem('localListItems'))
     variable.map(displayLocalStorage)
 }
