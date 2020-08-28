@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do-List</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            color: white;
+            min-height: 100%;
+            font-family: Poppins, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+            background-color: #2F303A;
+        }
+
+        #add-btn {
+            color: white;
+            background-color: #1762A7;
+            padding: .75rem 1.5rem;
+            border-radius: .5rem;
+            text-decoration: none;
+            font-size: .9rem;
+            outline: none;
+            border: none;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        #add-btn:hover {background-color: #176dbd;}
+
+        #change-btn {
+            color: white;
+            background-color: #1762A7;
+            padding: .75rem 1.5rem;
+            border-radius: .5rem;
+            text-decoration: none;
+            font-size: .9rem;
+            outline: none;
+            border: none;
+            cursor: pointer;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        #change-btn:hover {background-color: #176dbd;}
+
+        .input-group {
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .input-group label {
+        font-weight: bold;
+        margin-bottom: .5rem;
+        }
+
+        .input-group input {
+        outline: none;
+        background: none;
+        border: 1px solid #2E3852;
+        font-size: 1em;
+        padding: .5em;
+        color: inherit;
+        border-radius: 5px;
+        width: 80%;
+        }
+
+        .input-group input:focus {
+        border-color: #596da0;
+        }
+
+        .join-form {
+            background-color: #202027;
+            width: 80vw;
+            max-width: 80%;
+            padding: 2rem 4rem;
+            border-radius: 20px;
+        }
+        
+
+        #work-list-container {
+            width: 100%;
+        }
+
+
+        #work-list-items-container {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            background-color: #41414ed2;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        #work-list-items-container li {
+            margin: 1rem;
+            border-bottom: 1px solid;
+            padding: 1rem;
+            max-width: 80%;
+            overflow-wrap: break-word;
+        }
+
+        .remove-btn {
+            border-radius: 50%;
+            border: none;
+            background-color:  rgb(228, 6, 6);;
+            padding: .3rem .5rem;
+            cursor: pointer;
+        }
+
+        .remove-btn:hover {background-color:  red}
+
+        .edit-btn {
+            color: white;
+            background-color: #1762A7;
+            padding: .3rem .75rem;
+            border-radius: .5rem;
+            text-decoration: none;
+            outline: none;
+            border: none;
+            cursor: pointer; 
+            margin-left: 1rem; 
+        }
+
+        .edit-btn:hover {background-color: #176dbd;}
+
+        .content {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            max-width: 1200px;
+        }
+
+        .li-btns {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 1.2rem;
+        }
+    </style>
+    <script>
+        document.onload = loadStorage()
+
+        function addItem() {
+            inputBox = document.getElementById("work-text-input").value
+            addAsListItem()
+            clearButton()
+            localList()
+        }
+
+        function addAsListItem() {
+            inputBox = document.getElementById("work-text-input").value;
+            if (inputBox != "") {
+                listItem = document.createElement('li')
+                listItem.setAttribute("class","work-list-items")
+                listItemContent = `
+                    ${inputBox}
+                    <div class="li-btns">
+                        <button onclick = "removeItem()"class="remove-btn">&#10005</button>
+                        <button onclick = "editItem()" class="edit-btn">&#9998</button>
+                    </div>    
+                    `
+                listItem.innerHTML = listItemContent
+                document.querySelector('.list').appendChild(listItem)     
+            } else {
+                alert("Enter Some Input")
+            }
+        
+        }
+
+
+        function removeItem() {
+            rmvBtn = document.getElementsByClassName("remove-btn")
+            for (var i = 0; i < rmvBtn.length; i++) {
+                var button = rmvBtn[i]
+                button.addEventListener('click', removeListItem)
+                button.addEventListener('click', localList)
+
+            }
+
+        }
+
+        function removeListItem(event) {
+            buttonClicked = event.target
+            buttonClicked.parentElement.parentElement.remove()
+        }
+
+        function editItem() {
+            editBtn = document.getElementsByClassName("edit-btn")
+            for (var i = 0; i < editBtn.length; i++) {
+                var ebutton = editBtn[i]
+                ebutton.addEventListener('click', editListItem)
+                ebutton.addEventListener('click', localList)
+            }
+        }
+
+        function editListItem(event) {
+            addBtn = document.getElementById('add-btn')
+            addBtn.style.display = 'none'
+            changeBtn = document.getElementById('change-btn')
+            changeBtn.style.display = 'block'
+            ebuttonClicked = event.target
+            inputBox = document.getElementById("work-text-input")
+            listItems = document.getElementsByClassName("work-list-items")
+            listContent = ebuttonClicked.parentElement.parentElement
+            eString = listContent.innerText
+            editedString = eString.substr(0, eString.length - 3)
+            inputBox.value = editedString
+        }
+
+        function commitChange() {
+            inputBox = document.getElementById("work-text-input")
+            listItems = document.getElementsByClassName("work-list-items")
+            listContent.innerHTML = ` ${inputBox.value}
+            <div class="li-btns">
+                <button onclick = "removeItem()"class="remove-btn">&#10005</button>
+                <button onclick = "editItem()" class="edit-btn">&#9998</button>
+            </div>  ` 
+            localList()
+            exitCommit()
+        }
+
+        function exitCommit() {
+            addBtn.style.display = 'block'
+            changeBtn.style.display = 'none'
+            inputBox.value = null
+        }
+
+        function clearButton() {
+            inputBox = document.getElementById("work-text-input")
+            inputBox.value = null
+        }
+
+        function localList() {
+            localStorage.clear()
+            listItems = document.getElementsByClassName("work-list-items")
+            litems = []
+            for (var i = 0; i < listItems.length; i++) {
+                var litem = listItems[i].innerHTML
+                litems.push(litem)   
+            }
+            localStorage.setItem('localListItems', JSON.stringify(litems)) 
+        }
+
+        function loadStorage() {
+            variable = JSON.parse(localStorage.getItem('localListItems'))
+            variable.map(displayLocalStorage)
+        }
+
+        function displayLocalStorage(variable) {
+            listItem = document.createElement('li')
+            listItem.setAttribute("class","work-list-items")
+            listItem.innerHTML = variable
+            document.querySelector('.list').appendChild(listItem) 
+        }
+
+    </script>
+    
+    
+</head>
+<body>
+    <h1>To Do List</h1>
+    <div class="join-form">
+        <div class="input-group">
+            <label for="work">What to do?</label>
+            <input type="text" name="work" id="work-text-input">
+            <div>
+                <button onclick="addItem()" id="add-btn">Add Item</button>
+                <button onclick="commitChange()" id="change-btn">Commit Changes</button>
+        
+            </div>
+            </div>
+    </div>
+    
+    
+    <div id="work-list-container">
+        <h2>list-items</h2>
+        <div id="work-list-items-container">
+            <div class="content">
+                <ol class="list">
+                    
+                </ol>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>
